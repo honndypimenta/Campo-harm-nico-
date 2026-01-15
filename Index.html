@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Dicionário de Acordes para Teclado</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #0b1020;
+      color: #f5f5f5;
+      margin: 0;
+      padding: 0;
+    }
+
+    header {
+      background: linear-gradient(135deg, #3949ab, #7e57c2);
+      padding: 20px 30px;
+      text-align: center;
+      color: #fff;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 1.8rem;
+    }
+
+    header p {
+      margin: 8px 0 0;
+      font-size: 0.95rem;
+      opacity: 0.9;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 20px;
+      align-items: center;
+    }
+
+    .controls select,
+    .controls input {
+      padding: 6px 10px;
+      border-radius: 4px;
+      border: 1px solid #555;
+      background: #151827;
+      color: #f5f5f5;
+    }
+
+    .controls label {
+      font-size: 0.9rem;
+      opacity: 0.9;
+    }
+
+    .chord-card {
+      background: #151827;
+      border-radius: 10px;
+      padding: 16px;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+    }
+
+    .chord-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 12px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      padding-bottom: 8px;
+    }
+
+    .chord-name {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: #ffeb3b;
+    }
+
+    .chord-degree {
+      font-size: 0.9rem;
+      opacity: 0.8;
+    }
+
+    .chord-description {
+      font-size: 0.9rem;
+      opacity: 0.9;
+      margin-bottom: 12px;
+    }
+
+    .hands-wrapper {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+
+    .hand-block {
+      flex: 1 1 260px;
+      background: #1e2236;
+      border-radius: 8px;
+      padding: 10px 12px;
+    }
+
+    .hand-title {
+      font-size: 0.9rem;
+      font-weight: 600;
+      margin-bottom: 6px;
+      color: #90caf9;
+    }
+
+    .hand-notes {
+      font-size: 0.9rem;
+    }
+
+    .hand-notes span {
+      display: inline-block;
+      margin: 2px 4px 2px 0;
+      padding: 4px 8px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.06);
+    }
+
+    .hand-notes .highlight {
+      background: #ff9800;
+      color: #000;
+      font-weight: 600;
+    }
+
+    .piano {
+      position: relative;
+      display: inline-block;
+      background: #111421;
+      padding: 12px 8px 16px;
+      border-radius: 8px;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.06);
+    }
+
+    .piano-row {
+      display: flex;
+      position: relative;
+    }
+
+    .white-key {
+      position: relative;
+      width: 32px;
+      height: 140px;
+      background: linear-gradient(to bottom, #fafafa, #dcdcdc);
+      border: 1px solid #999;
+      border-radius: 0 0 4px 4px;
+      box-sizing: border-box;
+      display: flex;
+      justify-content: center;
+      align-items: flex-end;
+      font-size: 0.6rem;
+      padding-bottom: 4px;
+      color: #333;
+    }
+
+    .white-key.highlight-r {
+      background: linear-gradient(to bottom, #a5d6a7, #66bb6a);
+      border-color: #2e7d32;
+      box-shadow: 0 0 10px rgba(76,175,80,0.8);
+    }
+
+    .white-key.highlight-l {
+      background: linear-gradient(to bottom, #90caf9, #42a5f5);
+      border-color: #1565c0;
+      box-shadow: 0 0 10px rgba(33,150,243,0.8);
+    }
+
+    .black-key {
+      position: absolute;
+      width: 22px;
+      height: 90px;
+      background: linear-gradient(to bottom, #333, #000);
+      border-radius: 0 0 3px 3px;
+      border: 1px solid #000;
+      top: 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-end;
+      font-size: 0.55rem;
+      padding-bottom: 3px;
+      color: #eee;
+      z-index: 5;
+    }
+
+    .black-key.highlight-r {
+      background: linear-gradient(to bottom, #66bb6a, #2e7d32);
+      box-shadow: 0 0 10px rgba(76,175,80,0.9);
+    }
+
+    .black-key.highlight-l {
+      background: linear-gradient(to bottom, #42a5f5, #1565c0);
+      box-shadow: 0 0 10px rgba(33,150,243,0.9);
+    }
+
+    .legend {
+      display: flex;
+      gap: 10px;
+      margin-top: 8px;
+      font-size: 0.75rem;
+      color: #c5cae9;
+      justify-content: center;
+    }
+
+    .legend-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .legend-color {
+      width: 14px;
+      height: 14px;
+      border-radius: 3px;
+    }
+
+    .legend-color.r {
+      background: #66bb6a;
+    }
+
+    .legend-color.l {
+      background: #42a5f5;
+    }
+
+    .legend-color.both {
+      background: #ffb74d;
+    }
+
+    footer {
+      text-align: center;
+      padding: 12px 10px 20px;
+      font-size: 0.8rem;
+      color: #9fa8da;
+      border-top: 1px solid rgba(255,255,255,0.06);
+      margin-top: 24px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>🎹 Dicionário de Acordes para Teclado</h1>
+    <p>Visual interativo com acordes em duas mãos, notas destacadas e campo harmônico em todos os tons.</p>
+  </header>
+
+  <main class="container">
+    <section class="controls">
+      <label for="rootSelect">Tonalidade:</label>
+      <select id="rootSelect"></select>
+
+      <label for="qualitySelect">Tipo de acorde:</label>
+      <select id="qualitySelect"></select>
+
+      <label for="extensionSelect">Extensão:</label>
+      <select id="extensionSelect"></select>
+
+      <input id="searchInput" type="text" placeholder="Filtrar (ex: Am7, Cmaj7, G7)">
+    </section>
+
+    <section id="chordList"></section>
+  </main>
+
+  <footer>
+    Apostila HTML5 + CSS + JS · Gerada para uso em GitHub Pages · UTF-8
+  </footer>
+
+  <script>
+    // Mapa base de notas (uma oitava visual, de C a B)
+    const WHITE_ORDER = ['C','D','E','F','G','A','B'];
+    const BLACK_POS = {
+      'C#': 0.7,
+      'Db': 0.7,
+      'D#': 1.7,
+      'Eb': 1.7,
+      'F#': 3.7,
+      'Gb': 3.7,
+      'G#': 4.7,
+      'Ab': 4.7,
+      'A#': 5.7,
+      'Bb': 5.7
+    };
+
+    const NOTES_CHROMATIC = [
+      'C','C#','D','D#','E','F','F#','G','G#','A','A#','B'
+    ];
+
+    function transpose(note, semitones) {
+      const idx = NOTES_CHROMATIC.indexOf(note);
+      if (idx === -1) return note;
+      const newIndex = (idx + semitones + NOTES_CHROMATIC.length) % NOTES_CHROMATIC.length;
+      return NOTES_CHROMATIC[newIndex];
+    }
+
+    // Definição dos modelos de acordes
+    const CHORD_QUALITIES = {
+      'Maior':        [0, 4, 7],
+      'Menor':        [0, 3, 7],
+      'Diminuto':     [0, 3, 6],
+      'Aumentado':    [0, 4, 8],
+      'Maj7':         [0, 4, 7, 11],
+      'm7':           [0, 3, 7, 10],
+      '7':            [0, 4, 7, 10],
+      'm7♭5':         [0, 3, 6, 10],
+      'dim7':         [0, 3, 6, 9]
+    };
+
+    const EXTENSIONS = [
+      { label: 'Nenhuma', value: '' },
+      { label: '9',  value: '9', interval: 14 },
+      { label: '11', value: '11', interval: 17 },
+      { label: '13', value: '13', interval: 21 }
+    ];
+
+    const ROOTS = [
+      'C','C#','D','D#','E','F','F#','G','G#','A','A#','B'
+    ];
+
+    function buildChord(root, qualityKey, extensionValue) {
+      const base = CHORD_QUALITIES[qualityKey] || [];
+      let intervals = base.slice();
+      if (extensionValue) {
+        const ext = EXTENSIONS.find(e => e.value === extensionValue);
+        if (ext) intervals.push(ext.interval);
+      }
+      const notes = intervals.map(semi => transpose(root, semi));
+      return notes;
+    }
+
+    function buildDisplayName(root, qualityKey, extensionValue) {
+      let suffix = '';
+      switch (qualityKey) {
+        case 'Maior': suffix = ''; break;
+        case 'Menor': suffix = 'm'; break;
+        case 'Diminuto': suffix = '°'; break;
+        case 'Aumentado': suffix = '+'; break;
+        case 'Maj7': suffix = 'maj7'; break;
+        case 'm7': suffix = 'm7'; break;
+        case '7': suffix = '7'; break;
+        case 'm7♭5': suffix = 'm7♭5'; break;
+        case 'dim7': suffix = '°7'; break;
+      }
+      if (extensionValue) suffix += extensionValue;
+      return root + suffix;
+    }
+
+    function createPiano(chordNotes, leftBass) {
+      const wrapper = document.createElement('div');
+      wrapper.className = 'piano';
+
+      const row = document.createElement('div');
+      row.className = 'piano-row';
+
+      const whites = [];
+      WHITE_ORDER.forEach((name, index) => {
+        const key = document.createElement('div');
+        key.className = 'white-key';
+        key.dataset.note = name;
+        key.textContent = name;
+        row.appendChild(key);
+        whites.push(key);
+      });
+
+      const blacks = [];
+
+      WHITE_ORDER.forEach((name, index) => {
+        const baseX = index * 32;
+        const next = WHITE_ORDER[index + 1];
+        const hasSharp = (name + '#') in BLACK_POS;
+        if (hasSharp && next !== 'E' && next !== 'B') {
+          const sharpName = name + '#';
+          const key = document.createElement('div');
+          key.className = 'black-key';
+          key.dataset.note = sharpName;
+          key.textContent = sharpName;
+          const offset = BLACK_POS[sharpName] || 0.7;
+          key.style.left = (offset * 32) + 'px';
+          row.appendChild(key);
+          blacks.push(key);
+        }
+      });
+
+      const rightSet = new Set(chordNotes);
+      const leftSet = new Set([leftBass]);
+
+      function markKey(el, noteName) {
+        const n = noteName;
+        if (rightSet.has(n) && leftSet.has(n)) {
+          el.classList.add('highlight-r','highlight-l');
+        } else if (rightSet.has(n)) {
+          el.classList.add('highlight-r');
+        } else if (leftSet.has(n)) {
+          el.classList.add('highlight-l');
+        }
+      }
+
+      whites.forEach(el => markKey(el, el.dataset.note));
+      blacks.forEach(el => markKey(el, el.dataset.note));
+
+      wrapper.appendChild(row);
+
+      const legend = document.createElement('div');
+      legend.className = 'legend';
+      legend.innerHTML = `
+        <div class="legend-item">
+          <span class="legend-color r"></span> <span>Mão direita</span>
+        </div>
+        <div class="legend-item">
+          <span class="legend-color l"></span> <span>Mão esquerda</span>
+        </div>
+        <div class="legend-item">
+          <span class="legend-color both"></span> <span>Ambas</span>
+        </div>
+      `;
+      wrapper.appendChild(legend);
+
+      return wrapper;
+    }
+
+    function renderChordCard(container, root, qualityKey, extensionValue) {
+      const notes = buildChord(root, qualityKey, extensionValue);
+      const bass = root; // baixo simples = raiz
+
+      const card = document.createElement('article');
+      card.className = 'chord-card';
+
+      const header = document.createElement('div');
+      header.className = 'chord-header';
+      const title = document.createElement('div');
+      title.className = 'chord-name';
+      title.textContent = buildDisplayName(root, qualityKey, extensionValue);
+      const degree = document.createElement('div');
+      degree.className = 'chord-degree';
+      degree.textContent = 'Notas: ' + notes.join(' · ');
+      header.appendChild(title);
+      header.appendChild(degree);
+
+      const desc = document.createElement('p');
+      desc.className = 'chord-description';
+      desc.textContent = 'Mão direita toca o acorde completo; mão esquerda reforça a nota fundamental como baixo.';
+
+      const handsWrapper = document.createElement('div');
+      handsWrapper.className = 'hands-wrapper';
+
+      const rightBlock = document.createElement('div');
+      rightBlock.className = 'hand-block';
+      rightBlock.innerHTML = `
+        <div class="hand-title">Mão direita</div>
+        <div class="hand-notes">
+          ${notes.map(n => `<span class="highlight">${n}</span>`).join('')}
+        </div>
+      `;
+
+      const leftBlock = document.createElement('div');
+      leftBlock.className = 'hand-block';
+      leftBlock.innerHTML = `
+        <div class="hand-title">Mão esquerda (baixo)</div>
+        <div class="hand-notes">
+          <span class="highlight">${bass}</span>
+        </div>
+      `;
+
+      handsWrapper.appendChild(rightBlock);
+      handsWrapper.appendChild(leftBlock);
+
+      const piano = createPiano(notes, bass);
+
+      card.appendChild(header);
+      card.appendChild(desc);
+      card.appendChild(handsWrapper);
+      card.appendChild(piano);
+
+      container.appendChild(card);
+    }
+
+    function initUI() {
+      const rootSelect = document.getElementById('rootSelect');
+      const qualitySelect = document.getElementById('qualitySelect');
+      const extSelect = document.getElementById('extensionSelect');
+      const chordList = document.getElementById('chordList');
+      const searchInput = document.getElementById('searchInput');
+
+      ROOTS.forEach(r => {
+        const opt = document.createElement('option');
+        opt.value = r;
+        opt.textContent = r;
+        rootSelect.appendChild(opt);
+      });
+      rootSelect.value = 'C';
+
+      Object.keys(CHORD_QUALITIES).forEach(q => {
+        const opt = document.createElement('option');
+        opt.value = q;
+        opt.textContent = q;
+        qualitySelect.appendChild(opt);
+      });
+      qualitySelect.value = 'Maior';
+
+      EXTENSIONS.forEach(e => {
+        const opt = document.createElement('option');
+        opt.value = e.value;
+        opt.textContent = e.label;
+        extSelect.appendChild(opt);
+      });
+      extSelect.value = '';
+
+      function redraw() {
+        chordList.innerHTML = '';
+        const root = rootSelect.value;
+        const q = qualitySelect.value;
+        const ext = extSelect.value;
+        const filter = searchInput.value.trim().toLowerCase();
+
+        ROOTS.forEach(r => {
+          Object.keys(CHORD_QUALITIES).forEach(qKey => {
+            EXTENSIONS.forEach(e => {
+              const name = buildDisplayName(r, qKey, e.value);
+              if (filter && !name.toLowerCase().includes(filter)) return;
+              renderChordCard(chordList, r, qKey, e.value);
+            });
+          });
+        });
+
+        if (!filter) {
+          chordList.innerHTML = '';
+          renderChordCard(chordList, rootSelect.value, qualitySelect.value, extSelect.value);
+        }
+      }
+
+      rootSelect.addEventListener('change', redraw);
+      qualitySelect.addEventListener('change', redraw);
+      extSelect.addEventListener('change', redraw);
+      searchInput.addEventListener('input', redraw);
+
+      redraw();
+    }
+
+    document.addEventListener('DOMContentLoaded', initUI);
+  </script>
+</body>
+</html>
