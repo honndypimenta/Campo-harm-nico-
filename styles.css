@@ -1,0 +1,67 @@
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background: #f5f5f5;
+  color: #333;
+}
+
+header, footer {
+  background: #2c3e50;
+  color: white;
+  text-align: center;
+  padding: 1rem;
+}
+
+main {
+  padding: 1rem;
+}
+
+#piano {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin: 1rem 0;
+}
+
+.tecla {
+  width: 40px;
+  height: 150px;
+  margin: 1px;
+  border: 1px solid #333;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  cursor: pointer;
+  user-select: none;
+  position: relative;
+}
+
+.tecla.branca {
+  background: white;
+  z-index: 1;
+}
+
+.tecla.preta {
+  background: black;
+  width: 30px;
+  height: 100px;
+  margin-left: -15px;
+  margin-right: -15px;
+  z-index: 2;
+  color: white;
+}
+
+.acorde {
+  display: inline-block;
+  background: #3498db;
+  color: white;
+  padding: 0.5rem 1rem;
+  margin: 0.3rem;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+#acordes, #exemplo-musica {
+  margin-top: 1.5rem;
+}
